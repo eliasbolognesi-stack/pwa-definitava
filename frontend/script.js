@@ -799,5 +799,12 @@ async function sincronizarVendasPendentes() {
 setInterval(sincronizarVendasPendentes, 30000);
 sincronizarVendasPendentes();
 
+// Registrar Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('frontend/sw.js')
+        .then(reg => console.log('Service Worker registrado:', reg))
+        .catch(err => console.log('Erro ao registrar Service Worker:', err));
+}
+
 mudarPagina('dashboard');
 

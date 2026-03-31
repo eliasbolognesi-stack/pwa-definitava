@@ -3,9 +3,9 @@ const CACHE_NAME = 'mercearia-joao-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json'
+  '/frontend/style.css',
+  '/frontend/script.js',
+  '/frontend/manifest.json'
 ];
 
 // Instalação do Service Worker
