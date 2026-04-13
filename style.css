@@ -6,23 +6,23 @@
 }
 
 :root {
-    --primary: #4CAF50;
-    --primary-dark: #388E3C;
-    --secondary: #FF9800;
-    --danger: #f44336;
-    --success: #4CAF50;
-    --warning: #FFC107;
-    --dark: #333;
-    --gray: #666;
-    --light-gray: #f5f5f5;
+    --primary: #d32f2f;
+    --primary-dark: #b71c1c;
+    --secondary: #c62828;
+    --danger: #8b0000;
+    --success: #d32f2f;
+    --warning: #ff6f00;
+    --dark: #1a1a1a;
+    --gray: #4a4a4a;
+    --light-gray: #2a2a2a;
     --white: #fff;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     --border-radius: 16px;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3d1a1a 0%, #5d0000 100%);
     min-height: 100vh;
     padding: 16px;
 }
@@ -34,7 +34,7 @@ body {
 
 /* Header */
 header {
-    background: var(--white);
+    background: #1e1e1e;
     border-radius: var(--border-radius);
     padding: 16px 20px;
     margin-bottom: 16px;
@@ -61,13 +61,13 @@ header {
 
 .logo h1 {
     font-size: 20px;
-    color: var(--primary);
+    color: #ff6b6b;
 }
 
 .data-hora {
     font-size: 12px;
-    color: var(--gray);
-    background: var(--light-gray);
+    color: #aaa;
+    background: #2a2a2a;
     padding: 6px 12px;
     border-radius: 20px;
 }
@@ -88,7 +88,7 @@ header {
     gap: 8px;
     margin-bottom: 16px;
     flex-wrap: wrap;
-    background: var(--white);
+    background: #1e1e1e;
     padding: 8px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -98,7 +98,7 @@ header {
     flex: 1;
     padding: 12px 8px;
     border: none;
-    background: var(--light-gray);
+    background: #2a2a2a;
     border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
@@ -108,6 +108,7 @@ header {
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    color: #999;
 }
 
 .nav-btn span:first-child {
@@ -122,7 +123,7 @@ header {
 
 /* Cards */
 .card {
-    background: var(--white);
+    background: #1e1e1e;
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 16px;
@@ -133,7 +134,7 @@ header {
 .card h2 {
     font-size: 18px;
     margin-bottom: 16px;
-    color: var(--primary);
+    color: #ff6b6b;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -148,7 +149,7 @@ header {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border-radius: var(--border-radius);
     padding: 20px;
     text-align: center;
@@ -168,13 +169,13 @@ header {
 .stat-card .valor {
     font-size: 24px;
     font-weight: bold;
-    color: var(--primary);
+    color: #ff6b6b;
     margin: 8px 0;
 }
 
 .stat-card .label {
     font-size: 12px;
-    color: var(--gray);
+    color: #999;
 }
 
 /* Tabelas */
@@ -186,22 +187,23 @@ header {
 table {
     width: 100%;
     border-collapse: collapse;
+    color: #ddd;
 }
 
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid var(--light-gray);
+    border-bottom: 1px solid #3a3a3a;
 }
 
 th {
-    background: var(--light-gray);
+    background: #2a2a2a;
     font-weight: 600;
-    color: var(--dark);
+    color: #fff;
 }
 
 tr:hover {
-    background: var(--light-gray);
+    background: #2a2a2a;
 }
 
 /* Formulários */
@@ -213,23 +215,25 @@ tr:hover {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: var(--dark);
+    color: #ddd;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
     padding: 12px;
-    border: 2px solid var(--light-gray);
+    border: 2px solid #3a3a3a;
     border-radius: 12px;
     font-size: 16px;
     transition: all 0.3s;
+    background: #2a2a2a;
+    color: #ddd;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: #d32f2f;
 }
 
 /* Botões */
@@ -244,12 +248,12 @@ tr:hover {
 }
 
 .btn-primary {
-    background: var(--primary);
+    background: #d32f2f;
     color: var(--white);
 }
 
 .btn-primary:hover {
-    background: var(--primary-dark);
+    background: #b71c1c;
     transform: scale(1.02);
 }
 
@@ -274,7 +278,7 @@ tr:hover {
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    background: var(--light-gray);
+    background: #2a2a2a;
     border-radius: 12px;
     margin-bottom: 8px;
 }
@@ -285,11 +289,12 @@ tr:hover {
 
 .carrinho-item-nome {
     font-weight: 600;
+    color: #ddd;
 }
 
 .carrinho-item-preco {
     font-size: 12px;
-    color: var(--gray);
+    color: #999;
 }
 
 .carrinho-item-remove {
@@ -309,8 +314,9 @@ tr:hover {
     font-size: 20px;
     font-weight: bold;
     padding: 16px;
-    border-top: 2px solid var(--light-gray);
+    border-top: 2px solid #3a3a3a;
     margin-top: 16px;
+    color: #ff6b6b;
 }
 
 /* Modal */
@@ -328,7 +334,7 @@ tr:hover {
 }
 
 .modal-content {
-    background: var(--white);
+    background: #1e1e1e;
     border-radius: var(--border-radius);
     padding: 24px;
     max-width: 500px;
@@ -346,13 +352,13 @@ tr:hover {
 
 .modal-header h3 {
     font-size: 20px;
-    color: var(--primary);
+    color: #ff6b6b;
 }
 
 .close-modal {
     font-size: 28px;
     cursor: pointer;
-    color: var(--gray);
+    color: #999;
 }
 
 /* Alertas */
@@ -382,7 +388,7 @@ tr:hover {
     bottom: 20px;
     left: 20px;
     right: 20px;
-    background: var(--dark);
+    background: #1a1a1a;
     color: white;
     padding: 16px;
     border-radius: var(--border-radius);
@@ -395,7 +401,7 @@ tr:hover {
 }
 
 .install-banner button {
-    background: var(--primary);
+    background: #d32f2f;
     color: white;
     border: none;
     padding: 8px 16px;

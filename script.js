@@ -17,7 +17,11 @@ let cacheVendas = [];
 // ========== FUNÇÕES AUXILIARES ==========
 
 function formatarMoeda(valor) {
-    return 'R$ ' + valor.toFixed(2).replace('.', ',');
+    if (valor === undefined || valor === null || isNaN(valor)) {
+        console.warn('formatarMoeda recebeu valor inválido:', valor);
+        return 'R$ 0,00';
+    }
+    return 'R$ ' + parseFloat(valor).toFixed(2).replace('.', ',');
 }
 
 function mostrarAlerta(mensagem, tipo = 'sucesso') {
@@ -106,11 +110,17 @@ async function atualizarCache() {
 async function carregarProdutos() {
     try {
         const resp = await fetch(`${API_URL}/produtos`);
+        if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+        }
         produtos = await resp.json();
+        console.log('Produtos carregados do servidor:', produtos);
         localStorage.setItem('cache_produtos', JSON.stringify(produtos));
         return produtos;
     } catch (error) {
+        console.error('Erro ao carregar produtos da API:', error);
         produtos = JSON.parse(localStorage.getItem('cache_produtos') || '[]');
+        console.log('Usando produtos do cache:', produtos);
         return produtos;
     }
 }
@@ -118,11 +128,17 @@ async function carregarProdutos() {
 async function carregarClientes() {
     try {
         const resp = await fetch(`${API_URL}/clientes`);
+        if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+        }
         clientes = await resp.json();
+        console.log('Clientes carregados do servidor:', clientes);
         localStorage.setItem('cache_clientes', JSON.stringify(clientes));
         return clientes;
     } catch (error) {
+        console.error('Erro ao carregar clientes da API:', error);
         clientes = JSON.parse(localStorage.getItem('cache_clientes') || '[]');
+        console.log('Usando clientes do cache:', clientes);
         return clientes;
     }
 }
@@ -220,6 +236,22 @@ async function renderVendas() {
     await carregarProdutos();
     await carregarClientes();
     
+    // Garantir que todos os clientes e produtos têm os campos necessários
+    const clientesSeguros = clientes.map(c => ({
+        id: c.id || 0,
+        nome: c.nome || 'N/A',
+        telefone: c.telefone || '',
+        limite_fiado: c.limite_fiado || 0,
+        divida: c.divida || 0
+    }));
+    
+    const produtosSeguros = produtos.map(p => ({
+        id: p.id || 0,
+        nome: p.nome || 'N/A',
+        preco: p.preco || 0,
+        estoque: p.estoque || 0
+    }));
+    
     const html = `
         <div class="card">
             <h2>💰 Nova Venda</h2>
@@ -228,7 +260,7 @@ async function renderVendas() {
                 <label>👤 Cliente (opcional para fiado)</label>
                 <select id="clienteVenda">
                     <option value="">Consumidor Final</option>
-                    ${clientes.map(c => `<option value="${c.id}" data-divida="${c.divida}" data-limite="${c.limite}">${c.nome} (Limite: ${formatarMoeda(c.limite)} | Deve: ${formatarMoeda(c.divida)})</option>`).join('')}
+                    ${clientesSeguros.map(c => `<option value="${c.id}" data-divida="${c.divida}" data-limite="${c.limite_fiado}">${c.nome} (Limite: ${formatarMoeda(c.limite_fiado)} | Deve: ${formatarMoeda(c.divida)})</option>`).join('')}
                 </select>
             </div>
             
@@ -237,7 +269,7 @@ async function renderVendas() {
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <select id="produtoSelecionado" style="flex: 2">
                         <option value="">Selecione um produto</option>
-                        ${produtos.map(p => `<option value="${p.id}" data-preco="${p.preco}" data-estoque="${p.estoque}">${p.nome} - ${formatarMoeda(p.preco)} (${p.estoque} und)</option>`).join('')}
+                        ${produtosSeguros.map(p => `<option value="${p.id}" data-preco="${p.preco}" data-estoque="${p.estoque}">${p.nome} - ${formatarMoeda(p.preco)} (${p.estoque} und)</option>`).join('')}
                     </select>
                     <input type="number" id="quantidade" value="1" min="1" style="width: 80px">
                     <button class="btn btn-primary" onclick="adicionarAoCarrinho()">➕ Adicionar</button>
@@ -340,8 +372,8 @@ async function finalizarVenda(tipo) {
         const cliente = clientes.find(c => c.id === clienteId);
         const totalVenda = carrinho.reduce((s, i) => s + (i.preco * i.quantidade), 0);
         
-        if (cliente.divida + totalVenda > cliente.limite) {
-            mostrarAlerta(`Cliente excederia o limite de fiado! Limite: ${formatarMoeda(cliente.limite)}`, 'erro');
+        if (cliente.divida + totalVenda > cliente.limite_fiado) {
+            mostrarAlerta(`Cliente excederia o limite de fiado! Limite: ${formatarMoeda(cliente.limite_fiado)}`, 'erro');
             return;
         }
     }
@@ -492,39 +524,57 @@ async function excluirProduto(id) {
 // ========== PÁGINA DE CLIENTES ==========
 
 async function renderClientes() {
-    await carregarClientes();
-    
-    const html = `
-        <div class="card">
-            <h2>👥 Clientes</h2>
-            <button class="btn btn-primary" onclick="abrirModalCliente()" style="margin-bottom:15px">+ Novo Cliente</button>
-            
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Nome</th><th>Telefone</th><th>Limite</th><th>Dívida</th><th>Ações</th></tr>
-                    </thead>
-                    <tbody>
-                        ${clientes.map(c => `
-                            <tr>
-                                <td>${c.id}</td>
-                                <td>${c.nome}</td>
-                                <td>${c.telefone || '-'}</td>
-                                <td>${formatarMoeda(c.limite)}</td>
-                                <td style="${c.divida > 0 ? 'color:#f44336; font-weight:bold' : ''}">${formatarMoeda(c.divida)}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-small" onclick="editarCliente(${c.id})">✏️</button>
-                                    <button class="btn btn-danger btn-small" onclick="excluirCliente(${c.id})">🗑️</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+    try {
+        console.log('renderClientes chamado');
+        await carregarClientes();
+        console.log('Clientes carregados:', clientes);
+        
+        // Garantir que todos os clientes têm os campos necessários
+        const clientesSeguros = clientes.map(c => ({
+            id: c.id || 0,
+            nome: c.nome || 'N/A',
+            telefone: c.telefone || '',
+            limite_fiado: c.limite_fiado || 0,
+            divida: c.divida || 0
+        }));
+        
+        const html = `
+            <div class="card">
+                <h2>👥 Clientes</h2>
+                <button class="btn btn-primary" onclick="abrirModalCliente()" style="margin-bottom:15px">+ Novo Cliente</button>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nome</th><th>Telefone</th><th>Limite</th><th>Dívida</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody>
+                            ${clientesSeguros.map(c => `
+                                <tr>
+                                    <td>${c.id}</td>
+                                    <td>${c.nome}</td>
+                                    <td>${c.telefone || '-'}</td>
+                                    <td>${formatarMoeda(c.limite_fiado)}</td>
+                                    <td style="${c.divida > 0 ? 'color:#f44336; font-weight:bold' : ''}">${formatarMoeda(c.divida)}</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-small" onclick="editarCliente(${c.id})">✏️</button>
+                                        <button class="btn btn-danger btn-small" onclick="excluirCliente(${c.id})">🗑️</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    `;
-    
-    document.getElementById('conteudo').innerHTML = html;
+        `;
+        
+        console.log('Renderizando HTML...');
+        document.getElementById('conteudo').innerHTML = html;
+        console.log('HTML renderizado com sucesso');
+    } catch (error) {
+        console.error('Erro ao renderizar clientes:', error);
+        mostrarAlerta('Erro ao carregar clientes: ' + error.message, 'erro');
+    }
 }
 
 function abrirModalCliente(id = null) {
@@ -550,7 +600,7 @@ function abrirModalCliente(id = null) {
                 </div>
                 <div class="form-group">
                     <label>Limite de Fiado (R$)</label>
-                    <input type="number" step="0.01" id="modalLimite" value="${cliente ? cliente.limite : 0}">
+                    <input type="number" step="0.01" id="modalLimite" value="${cliente ? cliente.limite_fiado : 0}">
                 </div>
                 <button type="submit" class="btn btn-primary">Salvar</button>
             </form>
@@ -567,30 +617,41 @@ function abrirModalCliente(id = null) {
         
         const dados = {
             nome: document.getElementById('modalNome').value,
-            telefone: document.getElementById('modalTelefone').value,
-            limite: parseFloat(document.getElementById('modalLimite').value) || 0
+            telefone: document.getElementById('modalTelefone').value || null,
+            limite_fiado: parseFloat(document.getElementById('modalLimite').value || "0")
         };
         
+        console.log('Enviando cliente:', dados);
+        
         try {
+            let response;
             if (id) {
-                await fetch(`${API_URL}/clientes/${id}`, {
+                response = await fetch(`${API_URL}/clientes/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-                mostrarAlerta('Cliente atualizado!');
             } else {
-                await fetch(`${API_URL}/clientes`, {
+                response = await fetch(`${API_URL}/clientes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-                mostrarAlerta('Cliente criado!');
             }
+            
+            if (!response.ok) {
+                const erro = await response.json();
+                console.error('Erro da API:', erro);
+                mostrarAlerta(`Erro: ${JSON.stringify(erro.detail || erro)}`, 'erro');
+                return;
+            }
+            
+            mostrarAlerta(id ? 'Cliente atualizado!' : 'Cliente criado!');
             modal.remove();
             await renderClientes();
             await carregarClientes();
         } catch (error) {
+            console.error('Erro ao salvar cliente:', error);
             mostrarAlerta('Erro ao salvar cliente!', 'erro');
         }
     });
@@ -625,6 +686,15 @@ async function renderFiado() {
         devedores = JSON.parse(localStorage.getItem('cache_devedores') || '[]');
     }
     
+    // Garantir que todos os devedores têm os campos necessários
+    const devedoresSeguros = devedores.map(c => ({
+        id: c.id || 0,
+        nome: c.nome || 'N/A',
+        telefone: c.telefone || '',
+        limite_fiado: c.limite_fiado || 0,
+        divida: c.divida || 0
+    }));
+    
     const html = `
         <div class="card">
             <h2>📝 Controle de Fiado</h2>
@@ -642,19 +712,19 @@ async function renderFiado() {
                         </tr>
                     </thead>
                     <tbody>
-                        ${devedores.map(c => `
+                        ${devedoresSeguros.map(c => `
                             <tr>
                                 <td>${c.nome}</td>
                                 <td>${c.telefone || '-'}</td>
                                 <td style="color:#f44336; font-weight:bold">${formatarMoeda(c.divida)}</td>
-                                <td>${formatarMoeda(c.limite)}</td>
-                                <td>${formatarMoeda(c.limite - c.divida)}</td>
+                                <td>${formatarMoeda(c.limite_fiado)}</td>
+                                <td>${formatarMoeda(c.limite_fiado - c.divida)}</td>
                                 <td>
                                     <button class="btn btn-primary btn-small" onclick="abrirPagamento(${c.id}, '${c.nome}', ${c.divida})">💰 Pagar</button>
                                 </td>
                             </tr>
                         `).join('')}
-                        ${devedores.length === 0 ? '<tr><td colspan="6" style="text-align:center">Nenhum cliente com dívida</td></tr>' : ''}
+                        ${devedoresSeguros.length === 0 ? '<tr><td colspan="6" style="text-align:center">Nenhum cliente com dívida</td></tr>' : ''}
                     </tbody>
                 </table>
             </div>
@@ -726,6 +796,7 @@ function fecharModalAtual() {
 // ========== NAVEGAÇÃO ==========
 
 function mudarPagina(pagina) {
+    console.log('Mudando para página:', pagina);
     paginaAtual = pagina;
     
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -735,12 +806,18 @@ function mudarPagina(pagina) {
         }
     });
     
-    switch(pagina) {
-        case 'dashboard': renderDashboard(); break;
-        case 'vendas': renderVendas(); break;
-        case 'produtos': renderProdutos(); break;
-        case 'clientes': renderClientes(); break;
-        case 'fiado': renderFiado(); break;
+    try {
+        switch(pagina) {
+            case 'dashboard': renderDashboard(); break;
+            case 'vendas': renderVendas(); break;
+            case 'produtos': renderProdutos(); break;
+            case 'clientes': renderClientes(); break;
+            case 'fiado': renderFiado(); break;
+            default: console.warn('Página não reconhecida:', pagina);
+        }
+    } catch (error) {
+        console.error('Erro ao renderizar página:', error);
+        mostrarAlerta('Erro ao carregar página: ' + error.message, 'erro');
     }
 }
 
@@ -765,13 +842,21 @@ document.getElementById('btnInstall')?.addEventListener('click', async () => {
 
 // ========== INICIALIZAÇÃO ==========
 
+console.log('Script carregado!');
+
 setInterval(atualizarDataHora, 1000);
 atualizarDataHora();
 
+console.log('Adicionando event listeners aos botões de navegação');
 document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => mudarPagina(btn.dataset.page));
+    console.log('Botão encontrado:', btn.dataset.page);
+    btn.addEventListener('click', (e) => {
+        console.log('Botão clicado:', btn.dataset.page);
+        mudarPagina(btn.dataset.page);
+    });
 });
 
+console.log('Carregando dados iniciais');
 // Carregar cache inicial
 carregarProdutos();
 carregarClientes();
