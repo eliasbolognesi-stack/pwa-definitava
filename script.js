@@ -175,7 +175,7 @@ async function renderDashboard() {
             <div class="stat-card">
                 <div class="emoji">📝</div>
                 <div class="valor">${formatarMoeda(dados.total_dividas)}</div>
-                <div class="label">Em Fiado</div>
+                <div class="label">Empréstimos</div>
             </div>
         </div>
         
