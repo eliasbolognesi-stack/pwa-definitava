@@ -6,23 +6,23 @@
 }
 
 :root {
-    --primary: #d32f2f;
-    --primary-dark: #b71c1c;
-    --secondary: #c62828;
-    --danger: #8b0000;
-    --success: #d32f2f;
-    --warning: #ff6f00;
-    --dark: #1a1a1a;
-    --gray: #4a4a4a;
-    --light-gray: #2a2a2a;
-    --white: #fff;
+    --primary: #d4af37;
+    --primary-dark: #b8941f;
+    --secondary: #2c3e50;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --dark: #1a2332;
+    --gray: #566573;
+    --light-gray: #34495e;
+    --white: #ecf0f1;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     --border-radius: 16px;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #3d1a1a 0%, #5d0000 100%);
+    background: linear-gradient(135deg, #1a2332 0%, #0f1419 100%);
     min-height: 100vh;
     padding: 16px;
 }
@@ -34,7 +34,7 @@ body {
 
 /* Header */
 header {
-    background: #1e1e1e;
+    background: #2c3e50;
     border-radius: var(--border-radius);
     padding: 16px 20px;
     margin-bottom: 16px;
@@ -61,13 +61,13 @@ header {
 
 .logo h1 {
     font-size: 20px;
-    color: #ff6b6b;
+    color: #d4af37;
 }
 
 .data-hora {
     font-size: 12px;
-    color: #aaa;
-    background: #2a2a2a;
+    color: #bdc3c7;
+    background: #34495e;
     padding: 6px 12px;
     border-radius: 20px;
 }
@@ -75,8 +75,8 @@ header {
 .status-offline {
     margin-top: 10px;
     padding: 8px;
-    background: #ff9800;
-    color: white;
+    background: #f39c12;
+    color: #1a2332;
     border-radius: 8px;
     text-align: center;
     font-size: 12px;
@@ -88,7 +88,7 @@ header {
     gap: 8px;
     margin-bottom: 16px;
     flex-wrap: wrap;
-    background: #1e1e1e;
+    background: #2c3e50;
     padding: 8px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -98,7 +98,7 @@ header {
     flex: 1;
     padding: 12px 8px;
     border: none;
-    background: #2a2a2a;
+    background: #34495e;
     border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
@@ -108,7 +108,7 @@ header {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    color: #999;
+    color: #bdc3c7;
 }
 
 .nav-btn span:first-child {
@@ -116,14 +116,14 @@ header {
 }
 
 .nav-btn.active {
-    background: var(--primary);
-    color: var(--white);
+    background: #d4af37;
+    color: #1a2332;
     transform: translateY(-2px);
 }
 
 /* Cards */
 .card {
-    background: #1e1e1e;
+    background: #2c3e50;
     border-radius: var(--border-radius);
     padding: 20px;
     margin-bottom: 16px;
@@ -134,7 +134,7 @@ header {
 .card h2 {
     font-size: 18px;
     margin-bottom: 16px;
-    color: #ff6b6b;
+    color: #d4af37;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -149,7 +149,7 @@ header {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     border-radius: var(--border-radius);
     padding: 20px;
     text-align: center;
@@ -169,13 +169,13 @@ header {
 .stat-card .valor {
     font-size: 24px;
     font-weight: bold;
-    color: #ff6b6b;
+    color: #d4af37;
     margin: 8px 0;
 }
 
 .stat-card .label {
     font-size: 12px;
-    color: #999;
+    color: #95a5a6;
 }
 
 /* Tabelas */
@@ -193,17 +193,17 @@ table {
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #3a3a3a;
+    border-bottom: 1px solid #34495e;
 }
 
 th {
-    background: #2a2a2a;
+    background: #34495e;
     font-weight: 600;
-    color: #fff;
+    color: #d4af37;
 }
 
 tr:hover {
-    background: #2a2a2a;
+    background: #34495e;
 }
 
 /* Formulários */
@@ -215,25 +215,25 @@ tr:hover {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #ddd;
+    color: #ecf0f1;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
     padding: 12px;
-    border: 2px solid #3a3a3a;
+    border: 2px solid #34495e;
     border-radius: 12px;
     font-size: 16px;
     transition: all 0.3s;
-    background: #2a2a2a;
-    color: #ddd;
+    background: #34495e;
+    color: #ecf0f1;
 }
 
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #d32f2f;
+    border-color: #d4af37;
 }
 
 /* Botões */
@@ -248,12 +248,12 @@ tr:hover {
 }
 
 .btn-primary {
-    background: #d32f2f;
-    color: var(--white);
+    background: #d4af37;
+    color: #1a2332;
 }
 
 .btn-primary:hover {
-    background: #b71c1c;
+    background: #b8941f;
     transform: scale(1.02);
 }
 
@@ -278,7 +278,7 @@ tr:hover {
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    background: #2a2a2a;
+    background: #34495e;
     border-radius: 12px;
     margin-bottom: 8px;
 }
@@ -289,12 +289,12 @@ tr:hover {
 
 .carrinho-item-nome {
     font-weight: 600;
-    color: #ddd;
+    color: #ecf0f1;
 }
 
 .carrinho-item-preco {
     font-size: 12px;
-    color: #999;
+    color: #95a5a6;
 }
 
 .carrinho-item-remove {
@@ -314,9 +314,9 @@ tr:hover {
     font-size: 20px;
     font-weight: bold;
     padding: 16px;
-    border-top: 2px solid #3a3a3a;
+    border-top: 2px solid #34495e;
     margin-top: 16px;
-    color: #ff6b6b;
+    color: #d4af37;
 }
 
 /* Modal */
@@ -334,7 +334,7 @@ tr:hover {
 }
 
 .modal-content {
-    background: #1e1e1e;
+    background: #2c3e50;
     border-radius: var(--border-radius);
     padding: 24px;
     max-width: 500px;
@@ -352,13 +352,13 @@ tr:hover {
 
 .modal-header h3 {
     font-size: 20px;
-    color: #ff6b6b;
+    color: #d4af37;
 }
 
 .close-modal {
     font-size: 28px;
     cursor: pointer;
-    color: #999;
+    color: #95a5a6;
 }
 
 /* Alertas */
@@ -388,7 +388,7 @@ tr:hover {
     bottom: 20px;
     left: 20px;
     right: 20px;
-    background: #1a1a1a;
+    background: #2c3e50;
     color: white;
     padding: 16px;
     border-radius: var(--border-radius);
@@ -401,7 +401,8 @@ tr:hover {
 }
 
 .install-banner button {
-    background: #d32f2f;
+    background: #d4af37;
+    color: #1a2332;
     color: white;
     border: none;
     padding: 8px 16px;

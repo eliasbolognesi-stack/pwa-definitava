@@ -3,16 +3,16 @@ const API_URL = 'http://localhost:8000';
 
 // Estado global
 let paginaAtual = 'dashboard';
-let carrinho = [];
-let produtos = [];
-let clientes = [];
+let acervo = [];
+let itens = [];
+let responsaveis = [];
 let deferredPrompt = null;
 let modoOffline = false;
 
 // Cache para modo offline
-let cacheProdutos = [];
-let cacheClientes = [];
-let cacheVendas = [];
+let cacheItens = [];
+let cacheResponsaveis = [];
+let cacheAcervos = [];
 
 // ========== FUNÇÕES AUXILIARES ==========
 
@@ -233,43 +233,43 @@ async function renderDashboard() {
 // ========== PÁGINA DE VENDAS ==========
 
 async function renderVendas() {
-    await carregarProdutos();
-    await carregarClientes();
+    await carregarItens();
+    await carregarResponsaveis();
     
-    // Garantir que todos os clientes e produtos têm os campos necessários
-    const clientesSeguros = clientes.map(c => ({
-        id: c.id || 0,
-        nome: c.nome || 'N/A',
-        telefone: c.telefone || '',
-        limite_fiado: c.limite_fiado || 0,
-        divida: c.divida || 0
+    // Garantir que todos os responsáveis e itens têm os campos necessários
+    const responsaveisSeguros = responsaveis.map(r => ({
+        id: r.id || 0,
+        nome: r.nome || 'N/A',
+        telefone: r.telefone || '',
+        limite_emprestimos: r.limite_emprestimos || 0,
+        emprestimos_ativos: r.emprestimos_ativos || 0
     }));
     
-    const produtosSeguros = produtos.map(p => ({
-        id: p.id || 0,
-        nome: p.nome || 'N/A',
-        preco: p.preco || 0,
-        estoque: p.estoque || 0
+    const itensSeguros = itens.map(i => ({
+        id: i.id || 0,
+        nome: i.nome || 'N/A',
+        valor: i.valor || 0,
+        quantidade: i.quantidade || 0
     }));
     
     const html = `
         <div class="card">
-            <h2>💰 Nova Venda</h2>
+            <h2>� Registrar Empréstimo</h2>
             
             <div class="form-group">
-                <label>👤 Cliente (opcional para fiado)</label>
+                <label>👤 Responsável</label>
                 <select id="clienteVenda">
-                    <option value="">Consumidor Final</option>
-                    ${clientesSeguros.map(c => `<option value="${c.id}" data-divida="${c.divida}" data-limite="${c.limite_fiado}">${c.nome} (Limite: ${formatarMoeda(c.limite_fiado)} | Deve: ${formatarMoeda(c.divida)})</option>`).join('')}
+                    <option value="">Selecione um responsável</option>
+                    ${responsaveisSeguros.map(r => `<option value="${r.id}" data-emprestimos="${r.emprestimos_ativos}" data-limite="${r.limite_emprestimos}">${r.nome} (Ativos: ${r.emprestimos_ativos}/${r.limite_emprestimos})</option>`).join('')}
                 </select>
             </div>
             
             <div class="form-group">
-                <label>➕ Adicionar Produto</label>
+                <label>➕ Adicionar Item</label>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <select id="produtoSelecionado" style="flex: 2">
-                        <option value="">Selecione um produto</option>
-                        ${produtosSeguros.map(p => `<option value="${p.id}" data-preco="${p.preco}" data-estoque="${p.estoque}">${p.nome} - ${formatarMoeda(p.preco)} (${p.estoque} und)</option>`).join('')}
+                        <option value="">Selecione um item</option>
+                        ${itensSeguros.map(i => `<option value="${i.id}" data-valor="${i.valor}" data-quantidade="${i.quantidade}">${i.nome} - R$ ${i.valor} (${i.quantidade} disp)</option>`).join('')}
                     </select>
                     <input type="number" id="quantidade" value="1" min="1" style="width: 80px">
                     <button class="btn btn-primary" onclick="adicionarAoCarrinho()">➕ Adicionar</button>
@@ -277,11 +277,11 @@ async function renderVendas() {
             </div>
             
             <div id="carrinhoItens"></div>
-            <div class="total-carrinho" id="totalCarrinho">Total: R$ 0,00</div>
+            <div class="total-carrinho" id="totalCarrinho">Total de Itens: 0</div>
             
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn btn-primary" style="flex:1" onclick="finalizarVenda('avista')">✅ Finalizar (à vista)</button>
-                <button class="btn btn-warning" style="flex:1" onclick="finalizarVenda('fiado')">📝 Vender Fiado</button>
+                <button class="btn btn-primary" style="flex:1" onclick="finalizarVenda('disponivel')">✅ Registrar Empréstimo</button>
+                <button class="btn btn-warning" style="flex:1" onclick="finalizarVenda('devolucao')">🔄 Registrar Devolução</button>
             </div>
         </div>
     `;

@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'mercearia-elias-v2';
+const CACHE_NAME = 'patrimonio-v1';
 const urlsToCache = [
   '/',
   '/index.html',

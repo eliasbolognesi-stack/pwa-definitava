@@ -1,11 +1,11 @@
 {
-  "name": "Mercearia do Elias",
-  "short_name": "Mercearia",
-  "description": "Sistema de gestão para pequenos comércios",
+  "name": "Sistema de Patrimônio",
+  "short_name": "Patrimônio",
+  "description": "Sistema de gestão de patrimônio e acervo",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#d32f2f",
+  "background_color": "#1a2332",
+  "theme_color": "#2c3e50",
   "orientation": "portrait",
   "icons": [
     {
